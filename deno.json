@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "tasks": {
+    "start": "deno run --allow-net main.ts",
+    "lint": "deno lint"
+  }
+}

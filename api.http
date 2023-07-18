@@ -1,0 +1,5 @@
+###
+GET http://localhost:8000/api/day-for/fireworks HTTP/1.1
+
+###
+GET http://localhost:8000/api/day-for/snow HTTP/1.1
