@@ -1,0 +1,6 @@
+
+###
+GET http://happy-boar-82.deno.dev/api/day-for/fireworks/1688428800000 HTTP/1.1
+
+###
+GET http://happy-boar-82.deno.dev/api/day-for/snow/1688428800000 HTTP/1.1
