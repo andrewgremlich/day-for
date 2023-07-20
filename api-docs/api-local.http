@@ -8,4 +8,4 @@ GET http://localhost:8000/api/day-for/fireworks/1672531100000 HTTP/1.1
 GET http://localhost:8000/api/day-for/fireworks/1672617500000 HTTP/1.1
 
 ###
-GET http://localhost:8000/api/day-for/snow?lat=40.5146926&long=-111.9911153 HTTP/1.1
+GET http://localhost:8000/api/day-for/snow?lat=40.5146926&long=-111.9911154 HTTP/1.1

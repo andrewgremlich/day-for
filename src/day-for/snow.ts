@@ -3,21 +3,27 @@ import { Router, load, Redis } from "../../deps.ts";
 const env = await load();
 const PIRATE_WEATER_API_KEY = env.PIRATE_WEATER_API_KEY;
 const PIRATE_WEATHER_API_URL = env.PIRATE_WEATHER_API_URL;
-const UPSTASH_USER = env.UPSTASH_USER;
-const UPSTASH_PASSWORD = env.UPSTASH_PASSWORD;
-const UPSTASH_ENDPOINT = env.UPSTASH_ENDPOINT;
-const UPSTASH_PORT = env.UPSTASH_PORT;
+const UPSTASH_TOKEN = env.UPSTASH_TOKEN;
+const UPSTASH_URL = env.UPSTASH_URL;
+
+interface DayForSnow {
+  isSnowDay: boolean;
+  icon: string;
+}
 
 export const dayForSnowRouter = new Router().get("/", async (ctx) => {
-  const client = new Redis(`rediss://${UPSTASH_USER}:${UPSTASH_PASSWORD}@${UPSTASH_ENDPOINT}:${UPSTASH_PORT}`);
+  const redis = new Redis({
+    url: UPSTASH_URL,
+    token: UPSTASH_TOKEN,
+  })
   const lat = ctx.request.url.searchParams.get('lat');
   const long = ctx.request.url.searchParams.get('long');
   const redisKey = `isSnowDay:${lat}:${long}`;
-  const isCached = await client.exists(redisKey);
+  const isCached = await redis.exists(redisKey);
 
   if (isCached) {
-    const cachedValue = await client.get(redisKey);
-    ctx.response.body = JSON.parse(cachedValue);
+    const cachedValue: string | null = await redis.get(redisKey);
+    ctx.response.body = JSON.parse(cachedValue ?? '');
     return;
   }
 
@@ -33,7 +39,7 @@ export const dayForSnowRouter = new Router().get("/", async (ctx) => {
 
     const returnBody = { isSnowDay: weather.currently.icon === 'snow', icon: weather.currently.icon };
 
-    await client.set(redisKey, JSON.stringify(returnBody));
+    await redis.set(redisKey, JSON.stringify(returnBody));
 
     ctx.response.body = returnBody;
   } catch (err) {
