@@ -2,10 +2,10 @@ import { kv, Router } from "../../deps.ts";
 
 import { isTimestamp } from "../date-utils.ts";
 
-const isFireworkDay = (
+const getIsFireworkDay = (
   month: number,
   date: number,
-): { fireworks: boolean; holiday: string } => {
+): { isFireworkDay: boolean; holiday: string } => {
   const fireworkHolidays = [
     { month: 11, date: 31, name: "New Year's Eve" },
     { month: 0, date: 1, name: "New Year's Day" },
@@ -17,9 +17,9 @@ const isFireworkDay = (
   );
 
   if (holiday) {
-    return { fireworks: true, holiday: holiday.name };
+    return { isFireworkDay: true, holiday: holiday.name };
   } else {
-    return { fireworks: false, holiday: "" };
+    return { isFireworkDay: false, holiday: "" };
   }
 };
 
@@ -43,10 +43,10 @@ export const dayForFireworksRouter = new Router().get(
     const dateToAnalyze = new Date(timeStampNumber);
     const month = dateToAnalyze.getMonth();
     const date = dateToAnalyze.getDate();
-    const { fireworks, holiday } = isFireworkDay(month, date);
+    const { isFireworkDay, holiday } = getIsFireworkDay(month, date);
 
-    await kv.set(["fireworks", ctx.params.timestamp], { fireworks, holiday });
+    await kv.set(["isFireworkDay", ctx.params.timestamp], { isFireworkDay, holiday });
 
-    ctx.response.body = { fireworks, holiday };
+    ctx.response.body = { isFireworkDay, holiday };
   },
 );
