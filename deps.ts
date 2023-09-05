@@ -1,6 +1,7 @@
+import "https://deno.land/std@0.201.0/dotenv/load.ts";
+
 import { Application, Router } from "https://deno.land/x/oak/mod.ts";
-import { load } from "https://deno.land/std/dotenv/mod.ts";
 
 const kv = await Deno.openKv();
 
-export { Application, Router, load, kv };
+export { Application, Router, kv };

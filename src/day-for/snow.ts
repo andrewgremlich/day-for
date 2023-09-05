@@ -1,8 +1,7 @@
-import { kv, load, Router } from "../../deps.ts";
+import { kv, Router } from "../../deps.ts";
 
-const env = await load();
-const PIRATE_WEATER_API_KEY = env.PIRATE_WEATER_API_KEY;
-const PIRATE_WEATHER_API_URL = env.PIRATE_WEATHER_API_URL;
+const PIRATE_WEATHER_API_KEY = Deno.env.get("PIRATE_WEATHER_API_KEY");
+const PIRATE_WEATHER_API_URL = Deno.env.get("PIRATE_WEATHER_API_URL");
 
 interface DayForSnow {
   isSnowDay: boolean;
@@ -21,7 +20,7 @@ export const dayForSnowRouter = new Router().get("/", async (ctx) => {
 
   try {
     const fetchWeather = await fetch(
-      `${PIRATE_WEATHER_API_URL}/${PIRATE_WEATER_API_KEY}/${lat},${long}?units=si&exclude=hourly,minutely,daily,alerts`,
+      `${PIRATE_WEATHER_API_URL}/${PIRATE_WEATHER_API_KEY}/${lat},${long}?units=si&exclude=hourly,minutely,daily,alerts`,
     );
     const weather = await fetchWeather.json();
 

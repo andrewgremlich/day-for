@@ -1,6 +1,6 @@
 
 ###
-GET http://day-for.deno.dev/api/day-for/fireworks/1688428800000 HTTP/1.1
+GET http://day-for.deno.dev/api/day-for/fireworks/1688428900004 HTTP/1.1
 
 ###
-GET http://day-for.deno.dev/api/day-for/snow?lat=40.5146926&long=-111.9911153 HTTP/1.1
+GET http://day-for.deno.dev/api/day-for/snow?lat=40.5146926&long=-111.9911154 HTTP/1.1
