@@ -1,5 +1,5 @@
 ### July 4
-GET http://localhost:8000/api/day-for/fireworks/1688428900000 HTTP/1.1
+GET http://localhost:8000/api/day-for/fireworks/1688428900004 HTTP/1.1
 
 ### New Year's Eve
 GET http://localhost:8000/api/day-for/fireworks/1672531100000 HTTP/1.1
