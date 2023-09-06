@@ -1,19 +1,24 @@
-import { kv, Router } from "../../deps.ts";
+import { Router } from "../../deps.ts";
 
-import { isTimestamp } from "../date-utils.ts";
+const fireworkHolidays = [
+  { month: 1, day: 1, name: "New Year's Day" },
+  { month: 2, day: 14, name: "Valentine's Day" },
+  { month: 5, day: 5, name: "Cinco de Mayo" },
+  { month: 7, day: 4, name: "Independence Day" },
+  { month: 9, day: 2, name: "Labor Day" },
+  { month: 10, day: 31, name: "Halloween" },
+  { month: 11, day: 11, name: "Veterans Day" },
+  { month: 12, day: 24, name: "Christmas Eve" },
+  { month: 12, day: 25, name: "Christmas Day" },
+  { month: 12, day: 31, name: "New Year's Eve" },
+];
 
 const getIsFireworkDay = (
   month: number,
-  date: number,
+  day: number,
 ): { isFireworkDay: boolean; holiday: string } => {
-  const fireworkHolidays = [
-    { month: 11, date: 31, name: "New Year's Eve" },
-    { month: 0, date: 1, name: "New Year's Day" },
-    { month: 6, date: 3, name: "Independence Day" },
-    { month: 10, date: 11, name: "Veterans Day" },
-  ];
   const holiday = fireworkHolidays.find((holiday) =>
-    holiday.month === month && holiday.date === date
+    holiday.month === month && holiday.day === day
   );
 
   if (holiday) {
@@ -24,28 +29,13 @@ const getIsFireworkDay = (
 };
 
 export const dayForFireworksRouter = new Router().get(
-  "/:timestamp",
-  async (ctx) => {
-    const timeStampNumber = Number(ctx.params.timestamp);
-    const cachedValue = await kv.get(["fireworks", ctx.params.timestamp]);
+  "/",
+  (ctx) => {
+    const date = new Date();
+    const month = ((date.getMonth() + 1) % 12) || 12;
+    const day = date.getDate();
 
-    if (cachedValue.value) {
-      ctx.response.body = cachedValue.value;
-      return;
-    }
-
-    if (!isTimestamp(timeStampNumber)) {
-      ctx.response.status = 400;
-      ctx.response.body = { fireworkDay: false, message: "Invalid timestamp" };
-      return;
-    }
-
-    const dateToAnalyze = new Date(timeStampNumber);
-    const month = dateToAnalyze.getMonth();
-    const date = dateToAnalyze.getDate();
-    const { isFireworkDay, holiday } = getIsFireworkDay(month, date);
-
-    await kv.set(["isFireworkDay", ctx.params.timestamp], { isFireworkDay, holiday });
+    const { isFireworkDay, holiday } = getIsFireworkDay(month, day);
 
     ctx.response.body = { isFireworkDay, holiday };
   },

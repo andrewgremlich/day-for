@@ -3,15 +3,18 @@ import { kv, Router } from "../../deps.ts";
 const PIRATE_WEATHER_API_KEY = Deno.env.get("PIRATE_WEATHER_API_KEY");
 const PIRATE_WEATHER_API_URL = Deno.env.get("PIRATE_WEATHER_API_URL");
 
-interface DayForSnow {
-  isSnowDay: boolean;
-  icon: string;
-}
+const coords = [
+  { lat: 37.8651, long: -119.5383, name: "Yosemite National Park" },
+];
 
 export const dayForSnowRouter = new Router().get("/", async (ctx) => {
-  const lat = ctx.request.url.searchParams.get("lat");
-  const long = ctx.request.url.searchParams.get("long");
-  const cachedValue = await kv.get(["isSnowDay", lat, long]);
+  const lat = +(ctx.request.url.searchParams.get("lat") ?? coords[0].lat);
+  const long = +(ctx.request.url.searchParams.get("long") ?? coords[0].long);
+
+  const latRounded = lat.toFixed(4);
+  const longRounded = long.toFixed(4);
+
+  const cachedValue = await kv.get(["isSnowDay", latRounded, longRounded]);
 
   if (cachedValue.value) {
     ctx.response.body = cachedValue.value;
@@ -20,7 +23,7 @@ export const dayForSnowRouter = new Router().get("/", async (ctx) => {
 
   try {
     const fetchWeather = await fetch(
-      `${PIRATE_WEATHER_API_URL}/${PIRATE_WEATHER_API_KEY}/${lat},${long}?units=si&exclude=hourly,minutely,daily,alerts`,
+      `${PIRATE_WEATHER_API_URL}/${PIRATE_WEATHER_API_KEY}/${latRounded},${longRounded}?units=si&exclude=hourly,minutely,daily,alerts`,
     );
     const weather = await fetchWeather.json();
 
@@ -35,7 +38,7 @@ export const dayForSnowRouter = new Router().get("/", async (ctx) => {
       icon: weather.currently.icon,
     };
 
-    await kv.set(["isSnowDay", lat, long], returnBody);
+    await kv.set(["isSnowDay", latRounded, longRounded], returnBody);
 
     ctx.response.body = returnBody;
   } catch (err) {
