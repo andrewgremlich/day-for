@@ -12,5 +12,3 @@ export const dayForRouter = new Router().use(
   dayForSnowRouter.routes(),
   dayForSnowRouter.allowedMethods(),
 );
-
-// Make DENO CRON to clear the KV every day at 00:00 UTC

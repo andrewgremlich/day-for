@@ -8,6 +8,16 @@ const coords = [
 ];
 
 export const dayForSnowRouter = new Router().get("/", async (ctx) => {
+  if (!ctx.request.url.searchParams.get("lat") || !ctx.request.url.searchParams.get("long")) {
+    ctx.response.status = 400;
+    ctx.response.body = {
+      isSnowDay: false,
+      error: "Missing lat and long query parameters",
+      icon: "error",
+    };
+    return;
+  }
+
   const lat = +(ctx.request.url.searchParams.get("lat") ?? coords[0].lat);
   const long = +(ctx.request.url.searchParams.get("long") ?? coords[0].long);
 
