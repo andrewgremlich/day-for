@@ -29,19 +29,30 @@ export const dayForSnowRouter = new Router().get("/", async (ctx) => {
 
     if (fetchWeather.ok === false) {
       ctx.response.status = 500;
-      ctx.response.body = { isSnowDay: false, error: weather.error };
+      ctx.response.body = {
+        isSnowDay: false,
+        error: weather.error,
+        icon: "error",
+      };
       return;
     }
 
     const returnBody = {
       isSnowDay: weather.currently.icon === "snow",
       icon: weather.currently.icon,
+      error: false,
     };
 
-    await kv.set(["isSnowDay", latRounded, longRounded], returnBody);
+    await kv.set(["isSnowDay", latRounded, longRounded], returnBody, {
+      expireIn: 60 * 60 * 24,
+    });
 
     ctx.response.body = returnBody;
   } catch (err) {
-    ctx.response.body = { isSnowDay: false, error: err.toString() };
+    ctx.response.body = {
+      isSnowDay: false,
+      error: err.toString(),
+      icon: "error",
+    };
   }
 });
