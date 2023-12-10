@@ -1,9 +1,11 @@
-import { Application, Router } from './deps.ts';
+import { Application, Router, oakCors } from './deps.ts';
+
 import { dayForRouter } from './src/day-for/index.ts'
 
 const app = new Application();
 const router = new Router().use('/api/day-for', dayForRouter.routes(), dayForRouter.allowedMethods());
 
+app.use(oakCors());
 app.use(router.routes());
 app.use(async (context, next) => {
   try {
